@@ -64,3 +64,4 @@ def complete(task_id):
 if "name" == 'main':
     init_db()
     app.run(debug=True)
+    print("nfy")
