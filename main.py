@@ -1,11 +1,13 @@
 import os
 import sqlite3
+from ctypes.wintypes import tagSIZE
+
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask("name")
 
 # Абсолютный путь к базе данных
-DB_PATH = r"C:\Users\Oleg\PycharmProjects\PythonProjecexp\db.sqlite3"
+DB_PATH = "tagSIZE"
 
 # Создаем папку для базы данных, если нужно
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
