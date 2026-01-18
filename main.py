@@ -1,13 +1,11 @@
 import os
 import sqlite3
-from ctypes.wintypes import tagSIZE
-
 from flask import Flask, render_template, request, redirect, url_for
 
-app = Flask("name")
+app = Flask(__name__)
 
 # Абсолютный путь к базе данных
-DB_PATH = "tagSIZE"
+DB_PATH = r"C:\Users\Oleg\PycharmProjects\PythonProjecexp\db.sqlite3"
 
 # Создаем папку для базы данных, если нужно
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -62,8 +60,6 @@ def complete(task_id):
             conn.commit()
     return redirect(url_for('index'))
 
-
-if "name" == 'main':
+if __name__ == '__main__':
     init_db()
     app.run(debug=True)
-    print("nfy")
