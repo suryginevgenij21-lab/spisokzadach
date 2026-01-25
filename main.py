@@ -1,65 +1,64 @@
-import os
-import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
+import os
 
 app = Flask(__name__)
-
-# Абсолютный путь к базе данных
 DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'db.sqlite3')
 
-# Создаем папку для базы данных, если нужно
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-
-def init_db():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS tasks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                description TEXT NOT NULL,
-                completed BOOLEAN NOT NULL DEFAULT 0
-            )
-        ''')
-        conn.commit()
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.route('/')
 def index():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM tasks')
-        tasks = cursor.fetchall()
+    conn = get_db_connection()
+    tasks = conn.execute('SELECT id, description, completed FROM tasks').fetchall()
+    conn.close()
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add', methods=['POST'])
 def add():
-    description = request.form.get('description')
-    if description:
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-            cursor.execute('INSERT INTO tasks (description, completed) VALUES (?, ?)', (description, False))
-            conn.commit()
+    description = request.form['description']
+    conn = get_db_connection()
+    conn.execute('INSERT INTO tasks (description, completed) VALUES (?, ?)', (description, 0))
+    conn.commit()
+    conn.close()
     return redirect(url_for('index'))
 
-@app.route('/delete/<int:task_id>')
-def delete(task_id):
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM tasks WHERE id = ?', (task_id,))
+@app.route('/complete/<int:id>')
+def complete(id):
+    conn = get_db_connection()
+    # переключить статус
+    task = conn.execute('SELECT completed FROM tasks WHERE id=?', (id,)).fetchone()
+    new_status = 0 if task['completed'] else 1
+    conn.execute('UPDATE tasks SET completed=? WHERE id=?', (new_status, id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM tasks WHERE id=?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
+
+# --- Новое: Редактирование задачи ---
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    conn = get_db_connection()
+    if request.method == 'POST':
+        new_desc = request.form['description']
+        conn.execute('UPDATE tasks SET description=? WHERE id=?', (new_desc, id))
         conn.commit()
-    return redirect(url_for('index'))
-
-@app.route('/complete/<int:task_id>')
-def complete(task_id):
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('SELECT completed FROM tasks WHERE id = ?', (task_id,))
-        current = cursor.fetchone()
-        if current:
-            new_status = not current[0]
-            cursor.execute('UPDATE tasks SET completed = ? WHERE id = ?', (new_status, task_id))
-            conn.commit()
-    return redirect(url_for('index'))
+        conn.close()
+        return redirect(url_for('index'))
+    else:
+        task = conn.execute('SELECT * FROM tasks WHERE id=?', (id,)).fetchone()
+        conn.close()
+        return render_template('edit.html', task=task)
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)

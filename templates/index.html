@@ -24,16 +24,21 @@
         <ul class="list-group">
             {% for task in tasks %}
             <li class="list-group-item d-flex align-items-center {% if task[2] %}text-decoration-line-through text-muted{% endif %}">
-                <!-- Статус: выполнена или нет -->
+                <!-- Статус -->
                 <form action="/complete/{{ task[0] }}" method="get" class="me-3">
                     <button class="btn btn-sm {% if task[2] %}btn-success{% else %}btn-outline-secondary{% endif %} rounded-circle" type="submit" title="{% if task[2] %}Выполнена{% else %}Не выполнена{% endif %}">
                         {% if task[2] %}✔️{% else %}⬜{% endif %}
                     </button>
                 </form>
+
                 <!-- Описание задачи -->
                 <span class="flex-grow-1">{{ task[1] }}</span>
+
+                <!-- Кнопка редактирования -->
+                <a href="{{ url_for('edit', id=task[0]) }}" class="btn btn-sm btn-warning ms-2" title="Редактировать">✏️</a>
+
                 <!-- Удалить -->
-                <a href="/delete/{{ task[0] }}" class="btn btn-sm btn-danger ms-3" title="Удалить задачу">🗑️</a>
+                <a href="/delete/{{ task[0] }}" class="btn btn-sm btn-danger ms-2" title="Удалить задачу">🗑️</a>
             </li>
             {% endfor %}
         </ul>
