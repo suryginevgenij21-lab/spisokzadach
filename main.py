@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 # Абсолютный путь к базе данных
-DB_PATH = r"C:\Users\Oleg\PycharmProjects\PythonProjecexp\db.sqlite3"
+DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'db.sqlite3')
 
 # Создаем папку для базы данных, если нужно
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
