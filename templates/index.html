@@ -1,50 +1,65 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ToDo — Список дел</title>
-    <!-- Bootstrap CDN для стилей -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Собственный стиль -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToDo — Список дел</title>
+<!-- Bootstrap CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+<!-- Внешний CSS -->
+<link rel="stylesheet" href="style.css" />
 </head>
-<body class="bg-light py-5">
-    <div class="container shadow p-4 rounded bg-white">
-        <h1 class="text-center mb-4 text-primary fw-bold">Список дел</h1>
+<body>
 
-        <!-- Форма добавления задачи -->
-        <form action="/add" method="post" class="input-group mb-4">
-            <input type="text" class="form-control" name="description" placeholder="Новое задание" required />
-            <button class="btn btn-primary" type="submit">Добавить</button>
-        </form>
+<div class="my-container">
+  <h1 class="text-primary fw-bold">Список дел</h1>
 
-        <!-- Список задач -->
-        {% if tasks %}
-        <ul class="list-group">
-            {% for task in tasks %}
-            <li class="list-group-item d-flex align-items-center {% if task[2] %}text-decoration-line-through text-muted{% endif %}">
-                <!-- Статус -->
-                <form action="/complete/{{ task[0] }}" method="get" class="me-3">
-                    <button class="btn btn-sm {% if task[2] %}btn-success{% else %}btn-outline-secondary{% endif %} rounded-circle" type="submit" title="{% if task[2] %}Выполнена{% else %}Не выполнена{% endif %}">
-                        {% if task[2] %}✔️{% else %}⬜{% endif %}
-                    </button>
-                </form>
+  <!-- Форма добавления задачи -->
+  <form action="/add" method="post" class="input-group mb-4">
+    <input type="text" class="form-control" name="description" placeholder="Новое задание" required />
+    <button class="btn btn-primary" type="submit" title="Добавить"><i class="bi bi-plus-lg"></i></button>
+  </form>
 
-                <!-- Описание задачи -->
-                <span class="flex-grow-1">{{ task[1] }}</span>
+  {% if tasks %}
+  <!-- Список задач -->
+  <div class="d-flex flex-column gap-3">
+    {% for task in tasks %}
+    <div class="card task-card {% if task[2] %}border-success{% endif %}">
+      <div class="card-body d-flex align-items-center justify-content-between flex-wrap">
+        <div class="d-flex align-items-center">
+          <!-- Статус выполнения -->
+          <form action="/complete/{{ task[0] }}" method="get" class="me-3 mb-0">
+            <button class="btn btn-sm {% if task[2] %}btn-success{% else %}btn-outline-secondary{% endif %} rounded-circle" type="submit" title="{% if task[2] %}Выполнена{% else %}Не выполнена{% endif %}">
+              {% if task[2] %}
+                <i class="bi bi-check-circle"></i>
+              {% else %}
+                <i class="bi bi-circle"></i>
+              {% endif %}
+            </button>
+          </form>
+          <!-- Описание задачи -->
+          <span class="{% if task[2] %}completed{% endif %}">{{ task[1] }}</span>
+        </div>
 
-                <!-- Кнопка редактирования -->
-                <a href="{{ url_for('edit', id=task[0]) }}" class="btn btn-sm btn-warning ms-2" title="Редактировать">✏️</a>
-
-                <!-- Удалить -->
-                <a href="/delete/{{ task[0] }}" class="btn btn-sm btn-danger ms-2" title="Удалить задачу">🗑️</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="text-center text-muted mt-4">Задач нет. Добавьте новую — и она появится здесь!</p>
-        {% endif %}
+        <!-- Кнопки редактировать и удалить -->
+        <div>
+          <a href="{{ url_for('edit', id=task[0]) }}" class="btn btn-warning btn-sm" title="Редактировать">
+            <i class="bi bi-pencil-square"></i>
+          </a>
+          <a href="/delete/{{ task[0] }}" class="btn btn-danger btn-sm ms-2" title="Удалить" onclick="return confirm('Удалить задачу?');">
+            <i class="bi bi-trash"></i>
+          </a>
+        </div>
+      </div>
     </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-center text-muted mt-4">Задач нет. Добавьте новую — и она появится здесь!</p>
+  {% endif %}
+</div>
+
 </body>
 </html>
