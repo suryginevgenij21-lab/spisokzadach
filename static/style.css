@@ -1,9 +1,14 @@
+/* Обновленный style.css */
 body {
     background: linear-gradient(135deg, #74ebd5, #ACB6E5);
     min-height: 100vh;
     margin: 0;
-    padding: 0; /* добавим для чистоты */
+    padding: 0;
     font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: start; /* чтобы не было центрирования по вертикали */
+    line-height: 1.6;
 }
 
 /* Центрированный контейнер для всей страницы */
@@ -12,41 +17,54 @@ body {
     max-width: 700px;
     margin: 40px auto;
     padding: 20px;
-    /* Удалите или закомментируйте строку, чтобы фон контейнера был прозрачным */
-    /* background-color: #fff; */
-    background-color: transparent; /* чтобы было прозрачное, чтобы градиент просвечивал */
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    transition: box-shadow 0.3s;
 }
 
-/* Заголовок */
+.my-container:hover {
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+/* Заголовка */
 h1 {
     font-family: 'Arial', sans-serif;
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 20px;
+    color: #333;
 }
 
-/* Для кнопок при наведении — эффект масштабирования */
+/* Для кнопок при наведении — эффект масштабирования и стиль */
 button {
     transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
 }
-
 button:hover {
     transform: scale(1.1);
 }
 
-/* Для карточек задач */
+/* Кнопки с иконками */
+button .bi {
+    width: 20px;
+    height: 20px;
+}
+
+/* Карточки задач */
 .task-card {
     padding: 10px 15px;
     margin-bottom: 10px;
-    border-radius: 8px;
-    transition: background 0.3s;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
-
-/* Эффект при наведении на карточки */
 .task-card:hover {
-    background-color: #f1f1f1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
 /* Для выполненных задач */
@@ -55,9 +73,41 @@ button:hover {
     color: #6c757d;
 }
 
-/* Установка размера иконок Bootstrap Icons по умолчанию */
-button .bi {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle; /* чтобы иконки были по центру текста */
+/* Стиль для формы добавления */
+form.input-group {
+    display: flex;
+}
+form.input-group input[type="text"] {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+}
+form.input-group button {
+    border-radius: 0 8px 8px 0;
+    background-color: #007bff;
+    color: #fff;
+}
+form.input-group button:hover {
+    background-color: #0069d9;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Для кнопок управления задачами (редактировать, удалить) */
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+}
+
+/* Адаптивные стили */
+@media (max-width: 600px) {
+    .my-container {
+        margin: 20px;
+        padding: 15px;
+    }
+    h1 {
+        font-size: 2rem;
+    }
 }
