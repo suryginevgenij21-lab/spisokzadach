@@ -1,6 +1,35 @@
 
 /* Можно добавить свои стили, например: */
 body {
-    max-width: 600px;
-    margin: auto;
+    background-color: #f8f9fa; /* светлый фон */
+}
+
+.container {
+    max-width: 700px;
+    margin-top: 30px;
+}
+
+h1 {
+    font-family: 'Arial', sans-serif;
+    font-size: 2.5rem;
+}
+
+button {
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    transition: background-color 0.2s;
+}
+
+li:hover {
+    background-color: #f1f1f1;
 }

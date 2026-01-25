@@ -2,36 +2,44 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDo — Список дел</title>
     <!-- Bootstrap CDN для стилей -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Собственный стиль -->
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
 </head>
-<body class="container py-4">
-    <h1 class="mb-4">Список дел</h1>
+<body class="bg-light py-5">
+    <div class="container shadow p-4 rounded bg-white">
+        <h1 class="text-center mb-4 text-primary fw-bold">Список дел</h1>
 
-    <!-- Форма добавления задачи -->
-    <form action="/add" method="post" class="input-group mb-4">
-        <input type="text" class="form-control" name="description" placeholder="Новая задача" required />
-        <button class="btn btn-primary" type="submit">Добавить</button>
-    </form>
+        <!-- Форма добавления задачи -->
+        <form action="/add" method="post" class="input-group mb-4">
+            <input type="text" class="form-control" name="description" placeholder="Новое задание" required />
+            <button class="btn btn-primary" type="submit">Добавить</button>
+        </form>
 
-    <!-- Список задач -->
-    <ul class="list-group">
-        {% for task in tasks %}
-        <li class="list-group-item d-flex align-items-center {% if task[2] %}text-decoration-line-through text-muted{% endif %}">
-            <!-- Статус: выполнена или нет -->
-            <form action="/complete/{{ task[0] }}" method="get" class="me-2">
-                <button class="btn btn-sm btn-outline-secondary" type="submit">
-                    {% if task[2] %}✔️{% else %}⬜{% endif %}
-                </button>
-            </form>
-            <!-- Описание задачи -->
-            <span class="flex-grow-1">{{ task[1] }}</span>
-            <!-- Удалить -->
-            <a href="/delete/{{ task[0] }}" class="btn btn-sm btn-danger">Удалить</a>
-        </li>
-        {% endfor %}
-    </ul>
+        <!-- Список задач -->
+        {% if tasks %}
+        <ul class="list-group">
+            {% for task in tasks %}
+            <li class="list-group-item d-flex align-items-center {% if task[2] %}text-decoration-line-through text-muted{% endif %}">
+                <!-- Статус: выполнена или нет -->
+                <form action="/complete/{{ task[0] }}" method="get" class="me-3">
+                    <button class="btn btn-sm {% if task[2] %}btn-success{% else %}btn-outline-secondary{% endif %} rounded-circle" type="submit" title="{% if task[2] %}Выполнена{% else %}Не выполнена{% endif %}">
+                        {% if task[2] %}✔️{% else %}⬜{% endif %}
+                    </button>
+                </form>
+                <!-- Описание задачи -->
+                <span class="flex-grow-1">{{ task[1] }}</span>
+                <!-- Удалить -->
+                <a href="/delete/{{ task[0] }}" class="btn btn-sm btn-danger ms-3" title="Удалить задачу">🗑️</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-center text-muted mt-4">Задач нет. Добавьте новую — и она появится здесь!</p>
+        {% endif %}
+    </div>
 </body>
 </html>
